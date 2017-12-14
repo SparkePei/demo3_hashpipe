@@ -1,0 +1,17 @@
+#! /usr/bash
+nvcc -O3 --compiler-options '-fPIC' --compiler-bindir=/usr/bin/gcc -Xcompiler -Wall -arch=sm_61 -L/usr/local/cuda/lib64 -lcudart -lcufft -L/usr/local/lib -lhashpipe -lrt -lm -L/usr/lib64/pgplot -lpgplot -lcpgplot -lX11 demo3_gpu_proc.cu -c demo3_gpu_proc.o
+
+
+gcc -g -O3 -fPIC -shared -lstdc++ -mavx -msse4 -I. -I/usr/local/cuda/include -I/usr/local/include -L. -L/usr/local/lib -lhashpipe -lrt -lm -lcuda demo3_net_thread.c demo3_databuf.c demo3_gpu_thread.c demo3_output_thread.c demo3_gpu_proc.o -o demo3_hashpipe.so
+gcc -g -O3 -fPIC -shared -lstdc++ -mavx -msse4 -I. -I/usr/local/cuda/include -I/usr/local/include -L. -L/usr/local/lib -lhashpipe -lrt -lm -L/usr/local/cuda/lib64 -lcuda -lcudart -lcufft demo3_net_thread.c demo3_databuf.c demo3_gpu_thread.c demo3_output_thread.c demo3_gpu_proc.o -o demo3_hashpipe.so
+
+g++ -g -O3 -fPIC -shared -mavx -msse4 -I. -I/include -I/usr/local/include -L. -L/usr/local/lib -lhashpipe -lrt -lm -c filterbank.cpp
+
+nvcc -O3 --compiler-options '-fPIC'  --compiler-bindir=/usr/bin/gcc -Xcompiler -Wall -arch=sm_61 -shared -lstdc++ -I. -I/usr/local/cuda/include -I/usr/local/include -L. -L/usr/local/cuda/lib64 -lcudart -lcufft -L/usr/local/lib -lhashpipe -lrt -lm -L/usr/lib64/pgplot -lpgplot -lcpgplot -lX11 demo3_net_thread.c demo3_databuf.c demo3_gpu_thread.cu demo3_output_thread.c demo3_gpu_proc.cu filterbank.o -o demo3_hashpipe.so
+
+### full compile
+nvcc -O3 --compiler-options '-fPIC'  --compiler-bindir=/usr/bin/g++ -Xcompiler -Wall -arch=sm_61  -shared -lstdc++ -I. -I/usr/local/cuda/include -I/usr/local/include -L. -L/usr/local/cuda/lib64 -lcudart -lcufft -L/usr/local/lib -lhashpipe -lrt -lm -L/usr/lib64/pgplot -lpgplot -lcpgplot -lX11 demo3_net_thread.c demo3_databuf.c demo3_gpu_thread.cu demo3_output_thread.c demo3_gpu_kernels.cu filterbank.cpp demo3_plot.cu -o demo3_hashpipe.so
+
+### for gpu test
+nvcc -O3 --compiler-options '-fPIC' --compiler-bindir=/usr/bin/gcc -Xcompiler -Wall -arch=sm_61 -I. -I/usr/local/cuda/include -I/usr/local/include -L. -L/usr/local/cuda/lib64 -lcudart -lcufft -L/usr/local/lib -lhashpipe -lrt -lm -L/usr/lib64/pgplot -lpgplot -lcpgplot -lX11 gpu_test.c demo3_gpu_proc.cu demo3_plot.cu -o gpu_test
+
